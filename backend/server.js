@@ -6,6 +6,20 @@ import authRoutes from "./routes/auth.js";
 import jobRoutes from "./routes/jobs.js";
 import applicationRoutes from "./routes/applications.js";
 
+<<<<<<< HEAD
+=======
+const helmet = require('helmet');
+const rateLimit = require('express-rate-limit');
+
+app.use(helmet());
+app.use(express.json());
+app.use(cors({ origin: process.env.CORS_ORIGINS || '*' }));
+app.use(rateLimit({ windowMs: 60_000, max: 100 }));
+
+app.get('/health', (req,res)=> res.json({ ok: true }));
+
+
+>>>>>>> branch1
 dotenv.config();
 const app = express();
 

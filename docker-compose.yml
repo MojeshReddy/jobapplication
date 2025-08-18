@@ -1,0 +1,28 @@
+version: "3.9"
+services:
+  backend:
+    build:
+      context: ./backend
+    container_name: jobapp-backend
+    ports:
+      - "${BACKEND_PORT:-5000}:5000"
+    env_file:
+      - ./backend/.env
+    networks:
+      - jobapp-net
+
+  frontend:
+    image: nginx:alpine
+    container_name: jobapp-frontend
+    volumes:
+      - ./public:/usr/share/nginx/html:ro
+    ports:
+      - "${FRONTEND_PORT:-3000}:80"
+    depends_on:
+      - backend
+    networks:
+      - jobapp-net
+
+networks:
+  jobapp-net:
+    driver: bridge
