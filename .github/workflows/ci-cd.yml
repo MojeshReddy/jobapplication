@@ -9,27 +9,17 @@ on:
 jobs:
   build-test:
     runs-on: ubuntu-latest
-    env:
-      CI: true
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
           node-version: '20'
 
-      - name: Cache Node modules
-        uses: actions/cache@v3
-        with:
-          path: ~/.npm
-          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-node-
-
       - name: Install dependencies
-        run: npm ci
+        run: npm install
 
       - name: Run tests
         run: npm test -- --watchAll=false
@@ -39,26 +29,26 @@ jobs:
     needs: build-test
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Log in to DockerHub
-        uses: docker/login-action@v2
+        uses: docker/login-action@v3
         with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Build Docker images
         run: docker-compose build --no-cache
 
       - name: Tag Docker images
         run: |
-          docker tag jobapplication_backend ${{ secrets.DOCKER_USERNAME }}/jobapplication_backend:latest
-          docker tag jobapplication_frontend ${{ secrets.DOCKER_USERNAME }}/jobapplication_frontend:latest
+          docker tag jobapplication_backend ${{ secrets.DOCKERHUB_USERNAME }}/jobapplication_backend:latest
+          docker tag jobapplication_frontend ${{ secrets.DOCKERHUB_USERNAME }}/jobapplication_frontend:latest
 
       - name: Push Docker images
         run: |
-          docker push ${{ secrets.DOCKER_USERNAME }}/jobapplication_backend:latest
-          docker push ${{ secrets.DOCKER_USERNAME }}/jobapplication_frontend:latest
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/jobapplication_backend:latest
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/jobapplication_frontend:latest
 
   deploy:
     runs-on: ubuntu-latest
@@ -67,8 +57,4 @@ jobs:
     steps:
       - name: Deploy to server
         run: |
-          ssh ${{ secrets.SERVER_SSH }} "
-          cd /path/to/app &&
-          docker-compose pull &&
-          docker-compose up -d
-          "
+          ssh ${{ secrets.SERVER_SSH }} 'cd /path/to/app && docker-compose pull && docker-compose up -d'
