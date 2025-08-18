@@ -1,0 +1,31 @@
+version: "3.8"
+services:
+  backend:
+    build: ./backend
+    ports:
+      - "4000:4000"
+    env_file:
+      - ./backend/.env
+    volumes:
+      - ./backend:/app     # dev only: hot reload
+    depends_on:
+      - mongo
+
+  public:
+    build: ./public
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+
+  mongo:
+    image: mongo:6
+    restart: unless-stopped
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
+    volumes:
+      - mongo-data:/data/db
+
+volumes:
+  mongo-data:
