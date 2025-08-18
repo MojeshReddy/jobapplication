@@ -42,7 +42,7 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: ./backend
-          file: ./backend/Dockerfile   # specify Dockerfile location
+          file: ./backend/Dockerfile
           push: true
           tags: ${{ env.BACKEND_IMAGE }}
 
@@ -50,12 +50,12 @@ jobs:
       - name: Build and Push Frontend Image
         uses: docker/build-push-action@v5
         with:
-          context: ./public          # your actual frontend folder
-          file: ./public/Dockerfile  # specify Dockerfile location
+          context: ./public
+          file: ./public/Dockerfile
           push: true
           tags: ${{ env.FRONTEND_IMAGE }}
 
-      # 7️⃣ Optional: Deployment
+      # 7️⃣ Optional Deployment
       # - name: Deploy to server
       #   run: |
       #     ssh user@your-server "docker pull $BACKEND_IMAGE && docker pull $FRONTEND_IMAGE && docker-compose up -d"
