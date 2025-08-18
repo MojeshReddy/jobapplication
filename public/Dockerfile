@@ -1,13 +1,16 @@
-# Build step
-FROM node:20 as build
-WORKDIR /app
+# Use Node image for building
+FROM node:20 AS builder
+
+WORKDIR /usr/src/app
+
+# Copy frontend files
 COPY package*.json ./
 RUN npm install
 COPY . .
 RUN npm run build
 
-# Serve with Nginx
+# Use lightweight nginx to serve the app
 FROM nginx:alpine
-COPY --from=build /app/build /usr/share/nginx/html
+COPY --from=builder /usr/src/app/build /usr/share/nginx/html
 EXPOSE 80
 CMD ["nginx", "-g", "daemon off;"]
