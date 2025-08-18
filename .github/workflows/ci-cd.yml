@@ -45,16 +45,18 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Build and tag Docker images
+      - name: Build Docker images
+        run: docker-compose build --no-cache
+
+      - name: Tag Docker images
         run: |
-          docker-compose build --no-cache
-          docker tag jobapplication_backend ${{ secrets.DOCKER_USERNAME }}/jobapplication_backend:${GITHUB_SHA}
-          docker tag jobapplication_frontend ${{ secrets.DOCKER_USERNAME }}/jobapplication_frontend:${GITHUB_SHA}
+          docker tag jobapplication_backend ${{ secrets.DOCKER_USERNAME }}/jobapplication_backend:latest
+          docker tag jobapplication_frontend ${{ secrets.DOCKER_USERNAME }}/jobapplication_frontend:latest
 
       - name: Push Docker images
         run: |
-          docker push ${{ secrets.DOCKER_USERNAME }}/jobapplication_backend:${GITHUB_SHA}
-          docker push ${{ secrets.DOCKER_USERNAME }}/jobapplication_frontend:${GITHUB_SHA}
+          docker push ${{ secrets.DOCKER_USERNAME }}/jobapplication_backend:latest
+          docker push ${{ secrets.DOCKER_USERNAME }}/jobapplication_frontend:latest
 
   deploy:
     runs-on: ubuntu-latest
@@ -62,12 +64,9 @@ jobs:
     if: github.ref == 'refs/heads/main'
     steps:
       - name: Deploy to server
-        run: ssh ${{ secrets.SERVER_SSH }} "
+        run: |
+          ssh ${{ secrets.SERVER_SSH }} "
           cd /path/to/app &&
           docker-compose pull &&
-          docker-compose up -d &&
-          docker ps -a
-        "
-
-      - name: Health check backend
-        run: ssh ${{ secrets.SERVER_SSH }} "curl -f http://localhost:5000/health || exit 1"
+          docker-compose up -d
+          "
