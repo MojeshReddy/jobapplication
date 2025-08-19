@@ -20,6 +20,12 @@ app.use(rateLimit({ windowMs: 60_000, max: 100 }));
 // Health check route
 app.get('/health', (req, res) => res.json({ ok: true }));
 
+// Root route
+app.get("/", (req, res) => {
+  res.send("Backend API is running ✅");
+});
+
+
 // API routes
 app.use("/api/auth", authRoutes);
 app.use("/api/jobs", jobRoutes);
@@ -33,3 +39,4 @@ mongoose.connect(process.env.URI)
 // Start server
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+
