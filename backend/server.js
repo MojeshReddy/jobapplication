@@ -5,36 +5,31 @@ import cors from "cors";
 import authRoutes from "./routes/auth.js";
 import jobRoutes from "./routes/jobs.js";
 import applicationRoutes from "./routes/applications.js";
+import helmet from "helmet";
+import rateLimit from "express-rate-limit";
 
-<<<<<<< HEAD
-=======
-const helmet = require('helmet');
-const rateLimit = require('express-rate-limit');
+dotenv.config();
+const app = express();
 
+// Security & rate limiting
 app.use(helmet());
 app.use(express.json());
 app.use(cors({ origin: process.env.CORS_ORIGINS || '*' }));
 app.use(rateLimit({ windowMs: 60_000, max: 100 }));
 
-app.get('/health', (req,res)=> res.json({ ok: true }));
+// Health check route
+app.get('/health', (req, res) => res.json({ ok: true }));
 
-
->>>>>>> branch1
-dotenv.config();
-const app = express();
-
-app.use(cors());
-app.use(express.json());
-
-
+// API routes
 app.use("/api/auth", authRoutes);
 app.use("/api/jobs", jobRoutes);
 app.use("/api/applications", applicationRoutes);
 
-
+// Connect to MongoDB
 mongoose.connect(process.env.URI)
-  .then(() => console.log(" Database connected"))
+  .then(() => console.log("Database connected"))
   .catch((err) => console.error(err));
 
+// Start server
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
