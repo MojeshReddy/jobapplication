@@ -2,14 +2,14 @@ FROM node:20
 
 WORKDIR /usr/src/app
 
-# Copy only package files first for caching
+# Copy root package.json and package-lock.json
 COPY package*.json ./
 
 # Install dependencies
 RUN npm install --legacy-peer-deps
 
-# Copy all backend files
-COPY . .
+# Copy backend files
+COPY backend/ ./
 
 EXPOSE 5000
 
