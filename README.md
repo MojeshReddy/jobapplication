@@ -1,14 +1,14 @@
-🚀 Job Posting Platform (MERN + DevOps)
+Job Posting Platform (MERN + DevOps)
 
 A minimal Job Posting Platform built with the MERN stack and deployed with DevOps best practices.
 This project simulates a Full-Stack + DevOps Engineer role by combining application development with modern CI/CD, containerization, and cloud deployment.
 
-✨ Features
-👨‍💼 Admin
+Features
+Admin
 
 Post a job (title, company, location, salary, description)
 
-👩‍💻 User
+User
 
 Register/Login
 
@@ -18,7 +18,7 @@ Apply for jobs with resume link + note
 
 View "My Applications" page
 
-🏗️ Tech Stack
+Tech Stack
 
 Frontend: React.js (Hosted on Netlify)
 
@@ -32,24 +32,7 @@ CI/CD Pipeline: GitHub Actions (Build → Test → Push → Deploy)
 
 Secrets Management: .env files (local), GitHub Secrets (CI/CD)
 
-📂 Project Structure
-job-posting-platform/
-│
-├── backend/                 # Node.js + Express API
-│   ├── src/
-│   ├── Dockerfile
-│   └── package.json
-│
-├── frontend/                # React.js app
-│   ├── src/
-│   ├── Dockerfile
-│   └── package.json
-│
-├── docker-compose.yml       # Orchestration for frontend + backend
-├── .github/workflows/       # GitHub Actions CI/CD workflows
-└── README.md
-
-⚙️ DevOps Implementation
+⚙DevOps Implementation
 1️⃣ Dockerization
 
 Separate Dockerfiles for frontend & backend
@@ -101,7 +84,7 @@ Docker & Docker Compose
 
 MongoDB Atlas connection string
 
-🔹 Local Development
+Local Development
 
 Clone repo
 
@@ -144,29 +127,15 @@ Push to Docker Hub
 
 Deploy backend to Render, frontend to Netlify
 
-✅ Ensures zero manual steps from code → production deployment
+Ensures zero manual steps from code → production deployment
 
-🌐 Live Demo
+Live Demo
 
 Frontend (Netlify): https://forentend.netlify.app/
 
 Backend (Render): https://backend-1wa9.onrender.com
 
-Add E2E testing with Cypress
 
-Role-based access (Admin vs User dashboards)
 
-Deploy using AWS ECS + Terraform for production-grade infra
 
-Kubernetes (EKS) for orchestration
-
-🤝 Contribution
-
-Fork the repo
-
-Create a new branch (feature/xyz)
-
-Commit changes
-
-Push branch & open a PR
 
