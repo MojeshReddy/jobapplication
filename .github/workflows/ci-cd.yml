@@ -47,8 +47,8 @@ jobs:
       - name: Build and Push Frontend Image
         uses: docker/build-push-action@v5
         with:
-          context: ./frontend
-          file: ./frontend/Dockerfile
+          context: ./public
+          file: ./public/Dockerfile
           push: true
           tags: mojeshreddy/jobapp-frontend:latest
 
