@@ -29,7 +29,6 @@ jobs:
         run: |
           npm install
           npm test || echo "No tests found"
-
       # 4️⃣ Log in to Docker Hub
       - name: Log in to Docker Hub
         uses: docker/login-action@v2
@@ -54,33 +53,3 @@ jobs:
           file: ./public/Dockerfile
           push: true
           tags: ${{ env.FRONTEND_IMAGE }}
-          name: CI/CD Pipeline
-
-      # 7️⃣ Deploy Backend & Frontend to EC2
-      - name: Deploy to EC2
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.EC2_IP }}
-          username: ubuntu
-          key: ${{ secrets.EC2_SSH_KEY }}
-          script: |
-            # Backend Deployment
-            sudo docker pull mojeshreddy/jobapp-backend:latest
-            sudo docker stop jobapp-backend || true
-            sudo docker rm jobapp-backend || true
-            sudo docker run -d \
-              --name jobapp-backend \
-              --restart unless-stopped \
-              -p 5000:5000 \
-              -e PORT=5000 \
-              -e MONGO_URI="your-mongodb-atlas-uri" \
-              mojeshreddy/jobapp-backend:latest
-            # Frontend Deployment
-            sudo docker pull mojeshreddy/jobapp-frontend:latest
-            sudo docker stop jobapp-frontend || true
-            sudo docker rm jobapp-frontend || true
-            sudo docker run -d \
-              --name jobapp-frontend \
-              --restart unless-stopped \
-              -p 80:80 \
-              mojeshreddy/jobapp-frontend:latest
