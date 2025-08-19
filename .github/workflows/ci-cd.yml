@@ -41,7 +41,7 @@ jobs:
       - name: Build and Push Backend Image
         uses: docker/build-push-action@v5
         with:
-          context: .
+          context: ./backend           # ✅ Set context to backend folder
           file: ./backend/Dockerfile
           push: true
           tags: ${{ env.BACKEND_IMAGE }}
@@ -50,11 +50,10 @@ jobs:
       - name: Build and Push Frontend Image
         uses: docker/build-push-action@v5
         with:
-          context: .
+          context: ./public            # ✅ Set context to public folder
           file: ./public/Dockerfile
           push: true
           tags: ${{ env.FRONTEND_IMAGE }}
-          name: CI/CD Pipeline
 
       # 7️⃣ Deploy Backend & Frontend to EC2
       - name: Deploy to EC2
@@ -65,7 +64,7 @@ jobs:
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
             # Backend Deployment
-            sudo docker pull mojeshreddy/jobapp-backend:latest
+            sudo docker pull $BACKEND_IMAGE
             sudo docker stop jobapp-backend || true
             sudo docker rm jobapp-backend || true
             sudo docker run -d \
@@ -73,14 +72,15 @@ jobs:
               --restart unless-stopped \
               -p 5000:5000 \
               -e PORT=5000 \
-              -e MONGO_URI="your-mongodb-atlas-uri" \
-              mojeshreddy/jobapp-backend:latest
+              -e MONGO_URI="${{ secrets.MONGO_URI }}" \
+              $BACKEND_IMAGE
+
             # Frontend Deployment
-            sudo docker pull mojeshreddy/jobapp-frontend:latest
+            sudo docker pull $FRONTEND_IMAGE
             sudo docker stop jobapp-frontend || true
             sudo docker rm jobapp-frontend || true
             sudo docker run -d \
               --name jobapp-frontend \
               --restart unless-stopped \
               -p 80:80 \
-              mojeshreddy/jobapp-frontend:latest
+              $FRONTEND_IMAGE
