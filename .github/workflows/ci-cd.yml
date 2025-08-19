@@ -8,9 +8,12 @@ on:
 jobs:
   build-test-deploy:
     runs-on: ubuntu-latest
+    env:
+      BACKEND_IMAGE: mojeshreddy/jobapp-backend:latest
+      FRONTEND_IMAGE: mojeshreddy/jobapp-frontend:latest
 
     steps:
-      # 1️⃣ Checkout repository
+      # 1️⃣ Checkout code
       - name: Checkout repository
         uses: actions/checkout@v3
 
@@ -38,19 +41,20 @@ jobs:
       - name: Build and Push Backend Image
         uses: docker/build-push-action@v5
         with:
-          context: ./backend
+          context: .
           file: ./backend/Dockerfile
           push: true
-          tags: mojeshreddy/jobapp-backend:latest
+          tags: ${{ env.BACKEND_IMAGE }}
 
       # 6️⃣ Build and Push Frontend Docker image
       - name: Build and Push Frontend Image
         uses: docker/build-push-action@v5
         with:
-          context: ./public
+          context: .
           file: ./public/Dockerfile
           push: true
-          tags: mojeshreddy/jobapp-frontend:latest
+          tags: ${{ env.FRONTEND_IMAGE }}
+          name: CI/CD Pipeline
 
       # 7️⃣ Deploy Backend & Frontend to EC2
       - name: Deploy to EC2
@@ -71,7 +75,6 @@ jobs:
               -e PORT=5000 \
               -e MONGO_URI="your-mongodb-atlas-uri" \
               mojeshreddy/jobapp-backend:latest
-
             # Frontend Deployment
             sudo docker pull mojeshreddy/jobapp-frontend:latest
             sudo docker stop jobapp-frontend || true
