@@ -30,6 +30,12 @@ app.get("/", (req, res) => {
 app.use("/api/auth", authRoutes);
 app.use("/api/jobs", jobRoutes);
 app.use("/api/applications", applicationRoutes);
+app.use(cors({
+  origin: process.env.CORS_ORIGINS.split(","),
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  credentials: true
+}));
+
 
 // Connect to MongoDB
 mongoose.connect(process.env.URI)
@@ -39,4 +45,5 @@ mongoose.connect(process.env.URI)
 // Start server
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+
 
