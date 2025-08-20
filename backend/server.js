@@ -7,6 +7,7 @@ import jobRoutes from "./routes/jobs.js";
 import applicationRoutes from "./routes/applications.js";
 import helmet from "helmet";
 import rateLimit from "express-rate-limit";
+import cors from "cors";
 
 dotenv.config();
 const app = express();
@@ -45,5 +46,6 @@ mongoose.connect(process.env.URI)
 // Start server
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+
 
 
