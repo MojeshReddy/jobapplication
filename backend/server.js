@@ -14,38 +14,37 @@ const app = express();
 // Security & rate limiting
 app.use(helmet());
 app.use(express.json());
-app.use(cors({ origin: process.env.CORS_ORIGINS || '*' }));
 app.use(rateLimit({ windowMs: 60_000, max: 100 }));
 
+// ✅ CORS configuration
+const allowedOrigins = (process.env.CORS_ORIGINS || "http://localhost:3000").split(",");
+app.use(cors({
+  origin: allowedOrigins,
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  credentials: true
+}));
+
 // Health check route
-app.get('/health', (req, res) => res.json({ ok: true }));
+app.get("/health", (req, res) => res.json({ ok: true }));
 
 // Root route
 app.get("/", (req, res) => {
   res.send("Backend API is running ✅");
 });
 
-
 // API routes
 app.use("/api/auth", authRoutes);
 app.use("/api/jobs", jobRoutes);
 app.use("/api/applications", applicationRoutes);
-app.use(cors({
-  origin: process.env.CORS_ORIGINS.split(","),
-  methods: ["GET", "POST", "PUT", "DELETE"],
-  credentials: true
-}));
-
 
 // Connect to MongoDB
-mongoose.connect(process.env.URI)
-  .then(() => console.log("Database connected"))
-  .catch((err) => console.error(err));
+mongoose.connect(process.env.URI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true
+})
+  .then(() => console.log("✅ Database connected"))
+  .catch((err) => console.error("❌ Database error:", err));
 
 // Start server
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
-
-
-
-
+app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
